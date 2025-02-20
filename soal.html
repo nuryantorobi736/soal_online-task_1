@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teka-teki Lucu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff007f, #ff7f00, #7fff00, #00ff7f, #00ffff, #007fff, #0000ff, #7f00ff);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            margin: 0;
+            padding: 20px;
+            color: white;
+            /* Warna teks putih untuk kontras */
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        h1,
+        h2 {
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: black;
+            /* Warna teks hitam untuk konten */
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .form-control {
+            margin-bottom: 10px;
+        }
+        
+        .form-control input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .question {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .option {
+            margin: 5px 0;
+        }
+        
+        .btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        .correct {
+            color: green;
+        }
+        
+        .incorrect {
+            color: red;
+        }
+        
+        .correct-answer {
+            background-color: yellow;
+            padding: 5px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="loginForm">
+            <h1>Login</h1>
+            <div class="form-control">
+                <input type="text" id="username" placeholder="Nama" required>
+            </div>
+            <div class="form-control">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button class="btn" onclick="login()">Masuk</button>
+        </div>
+
+        <div id="quiz" class="hidden">
+            <h2>Teka-teki Lucu - Level 1</h2>
+            <div id="questions"></div>
+            <button class="btn" onclick="checkAnswers(1)">Periksa Jawaban</button>
+            <div id="result" class="result hidden"></div>
+            <button class="btn hidden" id="nextLevelBtn" onclick="nextLevel()">Lanjut ke Level 2</button>
+        </div>
+
+        <div id="quizLevel2" class="hidden">
+            <h2>Teka-teki Lucu - Level 2</h2>
+            <div id="questionsLevel2"></div>
+            <button class="btn" onclick="checkAnswers(2)">Periksa Jawaban</button>
+            <div id="resultLevel2" class="result hidden"></div>
+            <button class="btn hidden" id="nextLevelBtn2" onclick="nextLevel2()">Lanjut ke Level 3</button>
+        </div>
+
+        <div id="quizLevel3" class="hidden">
+            <h2>Teka-teki Lucu - Level 3</h2>
+            <div id="questionsLevel3"></div>
+            <button class="btn" onclick="checkAnswers(3)">Periksa Jawaban</button>
+            <div id="resultLevel3" class="result hidden"></div>
+            <button class="btn hidden" id="finishBtn" onclick="finish()">Finish</button>
+        </div>
+
+        <div id="finalResult" class="hidden">
+            <h2>Skor Akhir</h2>
+            <div id="finalScore" class="result"></div>
+            <div id="award" class="result"></div>
+            <button class="btn" id="restartBtn" onclick="restart()">Kembali ke Level 1</button>
+        </div>
+    </div>
+
+    <script>
+        const questionsLevel1 = [{
+            question: "1. Apa yang selalu datang tetapi tidak pernah tiba?",
+            options: ["Besok", "Hari Ini", "Kemarin"],
+            answer: 0
+        }, {
+            question: "2. Apa yang bisa terbang tanpa sayap?",
+            options: ["Waktu", "Burung", "Pesawat"],
+            answer: 0
+        }, {
+            question: "3. Apa yang bisa dipecahkan tetapi tidak bisa dilihat?",
+            options: ["Janji", "Telur", "Kaca"],
+            answer: 0
+        }, {
+            question: "4. Apa yang bisa berlari tetapi tidak memiliki kaki?",
+            options: ["Sungai", "Kucing", "Angin"],
+            answer: 0
+        }, {
+            question: "5. Apa yang bisa berputar tetapi tidak memiliki sayap?",
+            options: ["Roda", "Jam", "Bumi"],
+            answer: 1
+        }];
+
+        const questionsLevel2 = [{
+            question: "1. Apa yang memiliki banyak gigi tetapi tidak bisa menggigit?",
+            options: ["Sisir", "Kunci", "Pasta Gigi"],
+            answer: 0
+        }, {
+            question: "2. Apa yang tidak pernah basah meskipun tenggelam?",
+            options: ["Bayangan", "Ikan", "Kapal"],
+            answer: 0
+        }, {
+            question: "3. Apa yang selalu di depan Anda tetapi tidak bisa dilihat?",
+            options: ["Masa Depan", "Hidup", "Cahaya"],
+            answer: 0
+        }, {
+            question: "4. Apa yang bisa diisi tetapi tidak bisa dituang?",
+            options: ["Koper", "Wadah", "Saku"],
+            answer: 2
+        }, {
+            question: "5. Apa yang bisa terbang tanpa sayap?",
+            options: ["Mimpi", "Kapal", "Pesawat"],
+            answer: 0
+        }];
+
+        const questionsLevel3 = [{
+            question: "1. Apa yang bisa Anda pegang tetapi tidak bisa dilihat?",
+            options: ["Pikiran", "Uang", "Cinta"],
+            answer: 0
+        }, {
+            question: "2. Apa yang selalu bergerak tetapi tidak pernah pergi?",
+            options: ["Jam", "Sungai", "Angin"],
+            answer: 0
+        }, {
+            question: "3. Apa yang bisa dipatahkan tetapi tidak bisa dipegang?",
+            options: ["Janji", "Kaca", "Roti"],
+            answer: 0
+        }, {
+            question: "4. Apa yang memiliki banyak wajah tetapi hanya satu kepala?",
+            options: ["Koin", "Jam", "Buku"],
+            answer: 0
+        }, {
+            question: "5. Apa yang tidak bisa dimakan sebelum dimasak?",
+            options: ["Sereal", "Telur", "Daging"],
+            answer: 1
+        }];
+
+        let userName;
+        let totalScore = 0;
+
+        function login() {
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+
+            if (usernameInput && passwordInput) {
+                userName = usernameInput;
+                document.getElementById('loginForm').classList.add('hidden');
+                showQuiz(1);
+            } else {
+                alert('Nama dan Password harus diisi!');
+            }
+        }
+
+        function showQuiz(level) {
+            let questions;
+            let questionsDiv;
+            let resultDiv;
+            let nextBtn;
+
+            switch (level) {
+                case 1:
+                    questions = questionsLevel1;
+                    questionsDiv = document.getElementById('questions');
+                    resultDiv = document.getElementById('result');
+                    nextBtn = document.getElementById('nextLevelBtn');
+                    document.getElementById('quiz').classList.remove('hidden');
+                    break;
+                case 2:
+                    questions = questionsLevel2;
+                    questionsDiv = document.getElementById('questionsLevel2');
+                    resultDiv = document.getElementById('resultLevel2');
+                    nextBtn = document.getElementById('nextLevelBtn2');
+                    document.getElementById('quizLevel2').classList.remove('hidden');
+                    break;
+                case 3:
+                    questions = questionsLevel3;
+                    questionsDiv = document.getElementById('questionsLevel3');
+                    resultDiv = document.getElementById('resultLevel3');
+                    nextBtn = document.getElementById('finishBtn');
+                    document.getElementById('quizLevel3').classList.remove('hidden');
+                    break;
+                default:
+                    return;
+            }
+
+            questionsDiv.innerHTML = '';
+            questions.forEach((item, index) => {
+                        questionsDiv.innerHTML += `
+                <div class="question">
+                    <label>${item.question}</label><br>
+                    ${item.options.map((option, i) => `
+                        <div class="option">
+                            <input type="radio" name="question${level}${index}" value="${i}" id="q${level}${index}o${i}">
+                            <label for="q${level}${index}o${i}">${option}</label>
+                        </div>
+                    `).join('')}
+                    <div id="answer${level}${index}" class="correct-answer hidden"></div>
+                </div>
+                `;
+            });
+
+            nextBtn.classList.add('hidden');
+            resultDiv.classList.add('hidden');
+        }
+
+        function checkAnswers(level) {
+            let score = 0;
+            let questions;
+            let resultDiv;
+            let nextBtn;
+
+            switch (level) {
+                case 1:
+                    questions = questionsLevel1;
+                    resultDiv = document.getElementById('result');
+                    nextBtn = document.getElementById('nextLevelBtn');
+                    break;
+                case 2:
+                    questions = questionsLevel2;
+                    resultDiv = document.getElementById('resultLevel2');
+                    nextBtn = document.getElementById('nextLevelBtn2');
+                    break;
+                case 3:
+                    questions = questionsLevel3;
+                    resultDiv = document.getElementById('resultLevel3');
+                    nextBtn = document.getElementById('finishBtn');
+                    break;
+            }
+
+            resultDiv.innerHTML = '';
+
+            questions.forEach((item, index) => {
+                const selectedOption = document.querySelector(`input[name="question${level}${index}"]:checked`);
+                const answerDiv = document.getElementById(`answer${level}${index}`);
+
+                if (selectedOption && parseInt(selectedOption.value) === item.answer) {
+                    score++;
+                    answerDiv.innerHTML = `Jawaban yang benar: ${item.options[item.answer]}`;
+                    answerDiv.classList.remove('hidden');
+                    answerDiv.style.color = 'green';
+                } else {
+                    answerDiv.innerHTML = `Jawaban yang benar: ${item.options[item.answer]}`;
+                    answerDiv.classList.remove('hidden');
+                    answerDiv.style.color = 'red';
+                }
+            });
+
+            totalScore += score;
+            resultDiv.innerHTML = `Skor Anda: ${score} dari ${questions.length}`;
+            resultDiv.classList.remove('hidden');
+
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextLevel() {
+            checkAnswers(1);
+            showQuiz(2);
+        }
+
+        function nextLevel2() {
+            checkAnswers(2);
+            showQuiz(3);
+        }
+
+        function finish() {
+            checkAnswers(3);
+            document.getElementById('quizLevel3').classList.add('hidden');
+            document.getElementById('finalResult').classList.remove('hidden');
+            document.getElementById('finalScore').innerHTML = `Total Skor Anda: ${totalScore}`;
+
+            let award;
+            if (totalScore === 15) {
+                award = "Selamat! Anda adalah Juara Teka-teki!";
+            } else if (totalScore >= 10) {
+                award = "Bagus! Anda sangat pintar!";
+            } else {
+                award = "Cobalah lagi, Anda pasti bisa!";
+            }
+            document.getElementById('award').innerHTML = award;
+        }
+
+        function restart() {
+            totalScore = 0; // Reset total skor
+            document.getElementById('finalResult').classList.add('hidden'); // Sembunyikan hasil akhir
+            document.getElementById('quiz').classList.remove('hidden'); // Tampilkan Level 1
+            document.getElementById('quizLevel2').classList.add('hidden'); // Sembunyikan Level 2
+            document.getElementById('quizLevel3').classList.add('hidden'); // Sembunyikan Level 3
+            showQuiz(1); // Tampilkan Level 1
+        }
+    </script>
+
+</body>
+
+</html>
